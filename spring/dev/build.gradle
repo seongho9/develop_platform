@@ -1,0 +1,64 @@
+plugins {
+	id 'java'
+	id 'war'
+	id 'org.springframework.boot' version '3.2.3'
+	id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'me.seongho9'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	//spring jdbc starter를 넣어야됨
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.mapstruct:mapstruct:1.4.2.Final'
+	//security
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5', 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+	implementation 'commons-codec:commons-codec:1.5'
+	implementation 'com.auth0:java-jwt:3.13.0'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	//sqlite
+	implementation 'org.xerial:sqlite-jdbc:3.36.0.3'
+	implementation 'org.hibernate.orm:hibernate-community-dialects:6.3.1.Final'
+	runtimeOnly 'org.xerial:sqlite-jdbc:3.36.0.3'
+	//docker-java
+	implementation 'com.github.docker-java:docker-java-core:3.3.4'
+	implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.3.4'
+	implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
+	implementation 'com.google.code.findbugs:jsr305:3.0.2'
+	implementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
+	//jsch
+	implementation 'com.github.mwiede:jsch:0.2.17'
+
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	testImplementation 'com.github.docker-java:docker-java-core:3.3.4'
+	testImplementation 'com.github.docker-java:docker-java-transport-httpclient5:3.3.4'
+	testImplementation 'com.google.code.findbugs:jsr305:3.0.2'
+	testImplementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

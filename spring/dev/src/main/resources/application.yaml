@@ -1,0 +1,29 @@
+spring:
+  aop: auto=true
+  datasource:
+    driver-class-name: org.sqlite.JDBC
+    url: 
+    hikari:
+      maximum-pool-size: 3
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: update
+docker:
+  host: 
+  tls:
+    verify: 
+jwt:
+  access:
+    expire: 
+    header: 
+  refresh:
+    expire: 
+    header: 
+  secret:
+host:
+  ip:
+  port:
+  user: 
+  key: 
+  volume:
