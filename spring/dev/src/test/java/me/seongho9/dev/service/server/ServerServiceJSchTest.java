@@ -16,6 +16,16 @@ class ServerServiceJSchTest {
     ServerService serverService;
 
     @Test
+    void rm() {
+        //given
+        String path = "/home/seongho/test_spring";
+        serverService.mkdir(path);
+        //when
+        serverService.rm(path);
+        //then
+        Assertions.assertThat(serverService.ls("/home/seongho")).isNotIn("test_spring");
+    }
+    @Test
     void mkdir() {
         //given
         String path = "/home/seongho/test_spring";
@@ -23,18 +33,9 @@ class ServerServiceJSchTest {
         serverService.mkdir(path);
         //then
         Assertions.assertThat(serverService.ls("/home/seongho")).contains("test_spring");
+        //after
+        serverService.rm("/home/seongho/test_spring");
     }
-
-    @Test
-    void rm() {
-        //given
-        String path = "/home/seongho/test_spring";
-        //when
-        serverService.rm(path);
-        //then
-        Assertions.assertThat(serverService.ls("/home/seongho")).isNotIn("test_spring");
-    }
-
     @Test
     void ls() {
         //given

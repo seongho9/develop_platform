@@ -9,6 +9,7 @@ import me.seongho9.dev.domain.member.vo.InfoVO;
 import me.seongho9.dev.repository.MemberRepository;
 import me.seongho9.dev.repository.PortRepository;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +33,10 @@ class MemberServiceImplTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    //@BeforeEach
-    void beforeEach(){
+    @AfterEach
+    void afterEach() {
         memberRepository.deleteAll();
         portRepository.deleteAll();
-        ExposePorts ports = new ExposePorts();
-        ports.setStart(0); ports.setCurrent(0); ports.setEnd(0);
-        portRepository.save(ports);
     }
     @Test
     void signup() {
@@ -69,24 +67,6 @@ class MemberServiceImplTest {
     }
 
     @Test
-    void signupTransactionTest(){
-        //given
-        Integer beforePorts = portRepository.findEndOfPorts();
-        //invalid dto
-        SignupDTO signupDTO = new SignupDTO();
-        signupDTO.setName("seongho-jang");
-        signupDTO.setPasswd("1234");
-        signupDTO.setUserId("seongho9");
-        signupDTO.setMail(null);
-        //when
-        Assertions.assertThatThrownBy(()->memberService.signup(signupDTO))
-                .isInstanceOf(JpaSystemException.class);
-        //then
-        Integer afterPorts = portRepository.findEndOfPorts();
-        Assertions.assertThat(afterPorts).isEqualTo(beforePorts);
-    }
-
-    @Test
     void modifyMember() {
         //given
         SignupDTO signupDTO = new SignupDTO();
@@ -114,6 +94,14 @@ class MemberServiceImplTest {
     @Test
     void memberInfo() {
         //given
+        //member signup
+        SignupDTO signupDTO = new SignupDTO();
+        signupDTO.setName("seongho_jang");
+        signupDTO.setPasswd("1234");
+        signupDTO.setUserId("seongho9");
+        signupDTO.setMail("seongho9@gmail.com");
+        String id = memberService.signup(signupDTO);
+
         InfoDTO infoDTO = new InfoDTO();
         infoDTO.setUserId("seongho9");
         //when

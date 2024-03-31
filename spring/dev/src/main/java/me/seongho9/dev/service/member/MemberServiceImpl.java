@@ -40,8 +40,14 @@ public class MemberServiceImpl implements MemberService {
     public String signup(SignupDTO signupDTO) {
 
         try {
-            Integer endOfPorts = portRepository.findEndOfPorts();
-
+            if(portRepository.findEndOfPorts().isEmpty()){
+                ExposePorts ports = new ExposePorts();
+                ports.setStart(0);
+                ports.setCurrent(0);
+                ports.setEnd(0);
+                portRepository.save(ports);
+            }
+            Integer endOfPorts = portRepository.findEndOfPorts().get();
             ExposePorts ports = new ExposePorts();
             ports.setStart(endOfPorts + 1);
             ports.setEnd(endOfPorts + 10);

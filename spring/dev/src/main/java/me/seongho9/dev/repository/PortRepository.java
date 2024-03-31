@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface PortRepository extends JpaRepository<ExposePorts, Long> {
 
@@ -13,5 +15,5 @@ public interface PortRepository extends JpaRepository<ExposePorts, Long> {
             nativeQuery = true,
             value = "SELECT MAX(end) from exposed_port"
     )
-    Integer findEndOfPorts();
+    Optional<Integer> findEndOfPorts();
 }

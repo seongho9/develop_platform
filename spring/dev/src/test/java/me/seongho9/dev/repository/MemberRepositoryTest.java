@@ -3,6 +3,7 @@ package me.seongho9.dev.repository;
 import me.seongho9.dev.domain.ExposePorts;
 import me.seongho9.dev.domain.member.Member;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,8 @@ class MemberRepositoryTest {
     @Autowired
     PortRepository portRepository;
 
-    @BeforeEach
-    void beforeEach(){
+    @AfterEach
+    void afterEach(){
         memberRepository.deleteAll();
         portRepository.deleteAll();
     }
@@ -42,10 +43,6 @@ class MemberRepositoryTest {
                 .isInstanceOf(JpaSystemException.class);
     }
 
-    @Test
-    void saveMemberDuplicate() {
-        //JpaRepository .save 는 일반 SQL처럼 INSERT로만 작용하는게 아니고, 이미 있으면 변경 부분만 바꾸는 UPDATE로 작용
-    }
     @Test
     void findPasswordById() {
         //given
