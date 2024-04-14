@@ -10,7 +10,7 @@ spring:
     hibernate:
       ddl-auto: update
 docker:
-  host: tcp://192.168.0.5:2375
+  host: 
   tls:
     verify: false
 jwt:
@@ -20,10 +20,10 @@ jwt:
   refresh:
     expire: 60000000
     header: refresh
-  secret: 7ZWt7ZW0OTntmZTsnbTtjIXtlZzqta3snYTrhIjrqLjshLjqs4TroZzrgpjslYTqsIDsnpDtm4zrpa3tlZzqsJzrsJzsnpDrpbzrp4zrk6TslrTqsIDsnpA=
+  secret: 
 host:
-  ip: 192.168.0.5
-  mac: 00:16:96:ec:6b:36
+  ip: 
+  mac: 
   port: 22
   user: seongho
   key: ./key.pem
