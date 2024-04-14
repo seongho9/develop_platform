@@ -5,13 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import me.seongho9.dev.domain.container.Container;
 import me.seongho9.dev.domain.development.dto.CreateDevDTO;
 import me.seongho9.dev.domain.development.dto.DeleteEnvDTO;
-import me.seongho9.dev.domain.development.dto.GetEnvListDTO;
+import me.seongho9.dev.domain.development.vo.Environment;
 import me.seongho9.dev.service.development.DevelopmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -27,6 +30,9 @@ public class DevelopmentController {
     @ResponseStatus(code = HttpStatus.OK)
     public String createContainer(@RequestBody CreateDevDTO createDevDTO) {
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String name = authentication.getName();
+        createDevDTO.setUserId(name);
         developmentService.createEnvironment(createDevDTO);
 
         return "success to create container " + createDevDTO.getImageName();
@@ -35,9 +41,11 @@ public class DevelopmentController {
     @GetMapping("/list")
     @ResponseBody
     @ResponseStatus(code = HttpStatus.OK)
-    public List<Container> getDevList(@RequestBody GetEnvListDTO getEnvListDTO) {
+    public List<Environment> getDevList(@RequestHeader("Authorization") String token) {
 
-        List<Container> environmentList = developmentService.getEnvironmentList(getEnvListDTO.getUserId());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String name = authentication.getName();
+        List<Environment> environmentList = developmentService.getEnvironmentList(name);
 
         return environmentList;
     }

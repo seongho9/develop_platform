@@ -30,8 +30,6 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         jwtService.sendAccessAndRefresh(response, accessToken, refreshToken);
         memberRepository.updateRefreshToken(id, refreshToken);
-        log.info("로그인 성공 userId={}", id);
-        response.getWriter().write("success");
     }
 
     private String extractId(Authentication authentication) {

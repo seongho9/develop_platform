@@ -42,9 +42,9 @@ public class MemberServiceImpl implements MemberService {
         try {
             if(portRepository.findEndOfPorts().isEmpty()){
                 ExposePorts ports = new ExposePorts();
-                ports.setStart(0);
-                ports.setCurrent(0);
-                ports.setEnd(0);
+                ports.setStart(9000);
+                ports.setCurrent(9000);
+                ports.setEnd(9000);
                 portRepository.save(ports);
             }
             Integer endOfPorts = portRepository.findEndOfPorts().get();

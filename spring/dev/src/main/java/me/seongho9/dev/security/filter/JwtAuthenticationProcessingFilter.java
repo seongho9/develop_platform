@@ -48,7 +48,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             checkRefreshTokenAndReIssueAccessToken(response, refresh);
             return;
         }
-        log.info("{}", jwtService.extractId(jwtService.extractAccessToken(request).get()));
         checkAccessTokenAndAuthentication(request, response, filterChain);
     }
     private void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -58,15 +57,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                                 member -> saveAuthentication(member))
                         )
                 ));
-        String access = jwtService.extractAccessToken(request)
-                .filter(jwtService::isTokenValid)
-                .orElse(null);
-        String id = jwtService.extractId(access).orElse(null);
-        String refreshToken = memberRepository.findById(id).orElse(null).getRefreshToken();
-        //refresh가 없으면 로그인이 valid하지 않다는 뜻
-        if(refreshToken.isBlank() || refreshToken == null){
-            return;
-        }
+        log.info("token {}", jwtService.extractAccessToken(request));
         filterChain.doFilter(request,response);
     }
 

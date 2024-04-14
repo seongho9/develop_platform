@@ -3,6 +3,7 @@ package me.seongho9.dev.service.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
 import java.util.Optional;
 
@@ -60,11 +63,13 @@ public class JwtServiceImpl implements JwtService{
     }
 
     @Override
+    @Transactional
     public void updateRefreshToken(String id, String refreshToken) {
         memberRepository.updateRefreshToken(id, refreshToken);
     }
 
     @Override
+    @Transactional
     public void destroyRefreshToken(String id) {
         memberRepository.destroyRefreshToken(id);
 
@@ -73,9 +78,12 @@ public class JwtServiceImpl implements JwtService{
     @Override
     public void sendAccessAndRefresh(HttpServletResponse response, String accessToken, String refreshToken) {
         response.setStatus(HttpServletResponse.SC_OK);
-
-        setAccessTokenHeader(response, accessToken);
-        setRefreshTokenHeader(response, refreshToken);
+        String body = "{\"access\": \"" + accessToken + "\", \"refresh\": \"" + refreshToken + "\"}";
+        try {
+            response.getWriter().write(body);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -112,7 +120,12 @@ public class JwtServiceImpl implements JwtService{
 
     @Override
     public void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
-        response.setHeader(accessHeader, accessToken);
+        try {
+            PrintWriter writer = response.getWriter();
+            writer.write(accessToken);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

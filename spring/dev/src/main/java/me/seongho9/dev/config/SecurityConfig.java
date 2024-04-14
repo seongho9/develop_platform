@@ -18,12 +18,19 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 @Slf4j
 @Configuration
@@ -38,17 +45,31 @@ public class SecurityConfig {
             "/member/login",
             "/member/signup",
     };
+    //@Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        log.info("cors");
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+        corsConfiguration.setAllowedOriginPatterns(Collections.singletonList("*"));
+        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE","PUT"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+
+        return source;
+    }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 
-        http    .csrf(AbstractHttpConfigurer::disable) //csrf disable
-                .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
+        http    .httpBasic(HttpBasicConfigurer::disable)
+                //.cors(cors->cors.disable())
+                .csrf(AbstractHttpConfigurer::disable);
+
+        http    .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers(URL_TO_PERMIT).permitAll()
                         .anyRequest().authenticated())
                 .logout((logout) -> logout
-                        .logoutSuccessUrl("/member/login")
                         //delete total session after logout
                         .invalidateHttpSession(true))
                 .sessionManagement(session -> session
@@ -63,6 +84,7 @@ public class SecurityConfig {
                                     accessToken -> jwtService.extractId(accessToken).ifPresent(
                                             id -> memberRepository.destroyRefreshToken(id)
                                     ));
+                            authentication.setAuthenticated(false);
                         }))
                 .addFilterAfter(jsonUsernamePasswordAuthFilter(), LogoutFilter.class)
                 .addFilterBefore(jwtAuthorizationProcessingFilter(), JsonUsernamePasswordAuthenticationFilter.class);

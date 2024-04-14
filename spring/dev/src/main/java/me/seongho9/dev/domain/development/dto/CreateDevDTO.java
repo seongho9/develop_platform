@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class CreateDevDTO {
-    @NotBlank
+
     private String userId;
     @NotBlank
     private String imageName;

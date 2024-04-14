@@ -21,6 +21,10 @@ public interface ContainerRepository extends JpaRepository<Container, String> {
             );
 
     @Query(nativeQuery = true,
+            value = "SELECT count(*) FROM container WHERE user_id=:user")
+    Integer countContainerByUserId(@Param("user") String userId);
+
+    @Query(nativeQuery = true,
             value = "SELECT * FROM container WHERE user_id=:user")
     Optional<List<Container>> findContainerListByUserId(@Param("user") String userId);
 }

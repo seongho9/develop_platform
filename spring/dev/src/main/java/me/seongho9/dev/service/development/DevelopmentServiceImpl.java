@@ -2,9 +2,11 @@ package me.seongho9.dev.service.development;
 
 import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.api.exception.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import me.seongho9.dev.domain.container.Container;
 import me.seongho9.dev.domain.development.ContainerPort;
 import me.seongho9.dev.domain.development.dto.CreateDevDTO;
+import me.seongho9.dev.domain.development.vo.Environment;
 import me.seongho9.dev.excepction.member.MemberNotFoundException;
 import me.seongho9.dev.excepction.container.ContainerConflictException;
 import me.seongho9.dev.excepction.container.ContainerNotFoundException;
@@ -22,6 +24,7 @@ import java.util.*;
 import java.util.function.Function;
 
 @Service
+@Slf4j
 public class DevelopmentServiceImpl implements DevelopmentService {
 
     @Autowired
@@ -56,7 +59,8 @@ public class DevelopmentServiceImpl implements DevelopmentService {
             //create container
             Integer port = memberRepository.findById(createDTO.getUserId()).get().getPorts().getStart()
                     + getContainerPort(createDTO.getImageName()).ordinal();
-
+            log.info("ordinal {}", getContainerPort(createDTO.getImageName()).ordinal());
+            log.info("port {}", port);
             String id = containerService.createContainer(containerName, "seongho9/" + createDTO.getImageName(),
                     port, volumePath + "/" + containerName);
 
@@ -91,7 +95,7 @@ public class DevelopmentServiceImpl implements DevelopmentService {
         try {
             //get Domain data
             Container container = containerRepository.findById(containerId).get();
-            String containerName = getContainerName(container.getUserId(), imageName);
+            String containerName = container.getName();
 
             //delete container
             containerService.deleteContainer(containerId);
@@ -133,6 +137,7 @@ public class DevelopmentServiceImpl implements DevelopmentService {
 
     @Override
     public void startEnvironment(String containerId) {
+
         containerService.startContainer(containerId);
     }
 
@@ -143,11 +148,25 @@ public class DevelopmentServiceImpl implements DevelopmentService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Container> getEnvironmentList(String userId) {
+    public List<Environment> getEnvironmentList(String userId) {
         try {
-            List<Container> containers = containerRepository.findContainerListByUserId(userId).get();
+            Integer cnt = containerRepository.countContainerByUserId(userId);
+            log.info("{}", cnt);
+            if(cnt==0){
+                return new ArrayList<>();
+            }
 
-            return containers;
+            Optional<List<Container>> optional = containerRepository.findContainerListByUserId(userId);
+
+            List<Container> containers = optional.get();
+
+            List<Environment> envList = new ArrayList<>();
+            containers.forEach((container)->{
+                boolean isRunning = containerService.healthContainer(container.getId());
+                Environment env = new Environment(container.getId(), container.getUserId(), container.getName(), isRunning);
+                envList.add(env);
+            });
+            return envList;
         } catch (NoSuchElementException e){
             throw new MemberNotFoundException(e);
         }
@@ -165,19 +184,22 @@ public class DevelopmentServiceImpl implements DevelopmentService {
     }
 
     private ContainerPort getContainerPort(String imageName){
-        if(imageName.substring(0,imageName.indexOf(":")).equals("Java")){
+        log.info("image {}", imageName);
+        String image = imageName.substring(0, imageName.indexOf(":"));
+        log.info("image Name : {}", image);
+        if(image.equals("java")){
             return ContainerPort.JAVA;
         }
-        else if(imageName.substring(0,imageName.indexOf(":")).equals("C++") || imageName.substring(0,1).equals("C")){
+        else if(image.equals("cpp") || image.equals("c")){
             return ContainerPort.CPP;
         }
-        else if(imageName.substring(0,imageName.indexOf(":")).equals("javascript")){
+        else if(image.equals("javascript")){
             return ContainerPort.JAVASCRIPT;
         }
-        else if(imageName.substring(0,imageName.indexOf(":")).equals("rust")){
+        else if(image.equals("rust")){
             return ContainerPort.RUST;
         }
-        else if (imageName.substring(0,imageName.indexOf(":")).equals("python")) {
+        else if (image.equals("python")) {
             return ContainerPort.PYTHON;
         }
         else{
