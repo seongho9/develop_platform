@@ -17,11 +17,13 @@ import me.seongho9.dev.service.development.task.TaskManager;
 import me.seongho9.dev.service.server.ServerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.NamedThreadLocal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 @Service
 @Slf4j
@@ -44,17 +46,15 @@ public class DevelopmentServiceImpl implements DevelopmentService {
     @Transactional
     public void createEnvironment(CreateDevDTO createDTO) {
         String containerName = getContainerName(createDTO.getUserId(), createDTO.getImageName());
-        Queue<Function<String, String>> q = new LinkedList<>();
-        Queue<String> params = new LinkedList<>();
+        ThreadLocal<Queue<Function<String, String>>> rollback = ThreadLocal.withInitial(LinkedList::new);
         try {
             //make host volume
             serverService.mkdir(volumePath+"/"+containerName);
-            Function<String, String> undoVolume = (String param) ->{
-                serverService.rm(volumePath+"/"+param);
-                return param;
+            Function<String, String> undoMkdir= (String param) -> {
+                serverService.rm(volumePath+"/"+containerName);
+                return "";
             };
-            params.add(containerName);
-            taskManager.registerTask(q, undoVolume);
+            rollback.get().add(undoMkdir);
 
             //create container
             Integer port = memberRepository.findById(createDTO.getUserId()).get().getPorts().getStart()
@@ -64,34 +64,32 @@ public class DevelopmentServiceImpl implements DevelopmentService {
             String id = containerService.createContainer(containerName, "seongho9/" + createDTO.getImageName(),
                     port, volumePath + "/" + containerName);
 
-            Function<String, String> undoContainer = (String param) ->{
-                containerService.deleteContainer(param);
-                return param;
+            Function<String, String> undoContainer = (String param)->{
+                containerService.deleteContainer(id);
+                return "";
             };
-            taskManager.registerTask(q, undoContainer);
-            params.add(id);
+            rollback.get().add(undoContainer);
 
             //add repository
             Container container = new Container(id, createDTO.getUserId(), containerName, port);
             containerRepository.save(container);
 
         } catch (NoSuchElementException e){
-            taskManager.undo(q, params);
+            taskManager.undo(rollback.get());
             throw new MemberNotFoundException(e);
         } catch (ConflictException e) {
-            taskManager.undo(q, params);
+            taskManager.undo(rollback.get());
             throw new ContainerConflictException("Conflict Container " + createDTO.getImageName(), e.getCause());
         } finally {
-            q.clear();
-            params.clear();
+            rollback.get().clear();
         }
     }
 
     @Override
     @Transactional
     public void deleteEnvironment(String containerId, String imageName) {
-        Queue<Function<String, String>> q = new LinkedList<>();
-        Queue<String> params = new LinkedList<>();
+
+        ThreadLocal<Queue<Function<String, String>>> rollback = ThreadLocal.withInitial(LinkedList::new);
         try {
             //get Domain data
             Container container = containerRepository.findById(containerId).get();
@@ -99,39 +97,37 @@ public class DevelopmentServiceImpl implements DevelopmentService {
 
             //delete container
             containerService.deleteContainer(containerId);
-            Function<String, String> undoContainer = (String param) -> {
+            Function<String, String> undoContainer = (String param) ->{
                 String id = containerService.createContainer(
                         container.getName(), imageName, container.getPort(), containerName
                 );
                 return id;
             };
-            taskManager.registerTask(q, undoContainer);
-            params.add("");
+            rollback.get().add(undoContainer);
 
             //delete directory
             serverService.rm(volumePath + "/" + containerName);
+
             Function<String, String> undoDir = (String param) ->{
-                serverService.mkdir(param);
-                return param;
+                serverService.mkdir(volumePath+"/"+containerName);
+                return volumePath+"/"+containerName;
             };
-            taskManager.registerTask(q, undoDir);
-            params.add(volumePath + "/" + containerName);
+            rollback.get().add(undoDir);
 
             containerRepository.delete(container);
 
         } catch (NotFoundException e) {
-            taskManager.undo(q, params);
+            taskManager.undo(rollback.get());
             throw new ContainerNotFoundException("Not Found Container " + containerId, e.getCause());
         } catch (ConflictException e) {
-            taskManager.undo(q, params);
+            taskManager.undo(rollback.get());
             throw new ContainerConflictException("Container is Running", e.getCause());
         } catch (NoSuchElementException e){
-            taskManager.undo(q, params);
+            taskManager.undo(rollback.get());
             throw new MemberNotFoundException(e);
 
         } finally {
-            q.clear();
-            params.clear();
+            rollback.get().clear();
         }
     }
 

@@ -1,5 +1,6 @@
 package me.seongho9.dev.service.container.task;
 
+import lombok.extern.slf4j.Slf4j;
 import me.seongho9.dev.domain.ExposePorts;
 import me.seongho9.dev.domain.member.Member;
 import me.seongho9.dev.domain.member.dto.SignupDTO;
@@ -15,7 +16,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
+@Slf4j
 @SpringBootTest
 class TaskManagerTest {
 
@@ -38,16 +41,6 @@ class TaskManagerTest {
     }
     @Test
     void logPrint(){
-        Queue<Function<String, String>> q = new LinkedList<>();
-        Function<String, Integer> undoTask = (string) ->{
-            System.out.println(string);
-            return 1;
-        };
-        taskManager.registerTask(q, undoTask);
-
-        Queue<String> strings = new LinkedList<>();
-        strings.add("1234");
-        taskManager.undo(q, strings);
     }
 
     @Test
@@ -57,23 +50,20 @@ class TaskManagerTest {
         signupDTO.setPasswd("1234");
         signupDTO.setName("seonghoJang");
         signupDTO.setMail("seongho9276@gmail.com");
+
         memberService.signup(signupDTO);
-        Queue<Function<String, String>> q = new LinkedList<>();
-        Function<String, String> undoSignup = (id) -> {
-            Member member = new Member();
-            member.setId(id);
-            memberRepository.delete(member);
+
+        Queue<Function<String,String>> q= new LinkedList<>();
+        Function<String,String> undoSignup = (String param) -> {
+            memberRepository.deleteById("seongho9");
+            log.info("on function");
             return null;
         };
-        Queue<String> paramList = new LinkedList<>();
-        paramList.add("seongho9");
-        taskManager.registerTask(q, undoSignup);
-
+        q.add(undoSignup);
         Assertions.assertThat(memberRepository.findById("seongho9").get().getMail())
                 .isEqualTo(signupDTO.getMail());
-        taskManager.undo(q, paramList);
-
-        Assertions.assertThat(memberRepository.findById("seongho9").isEmpty()).isEqualTo(true);
+        taskManager.undo(q);
+        Optional<Member> byId = memberRepository.findById("seongho9");
 
     }
 }
