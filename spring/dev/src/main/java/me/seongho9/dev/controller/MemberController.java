@@ -27,6 +27,7 @@ public class MemberController {
     @ResponseStatus(code = HttpStatus.OK)
     public String signup(@RequestBody SignupDTO signupDTO) {
 
+        log.info("signup request = {}", signupDTO.getUserId());
         String id = memberService.signup(signupDTO);
 
         return "request for manager";

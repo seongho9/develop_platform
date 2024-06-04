@@ -12,6 +12,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { types } from 'util';
+import { baseUrl } from '../Request/Types';
 
 function Copyright(props: any) {
   return (
@@ -40,7 +42,8 @@ export default function SignUp() {
     const reqHeader = new Headers();
     reqHeader.set("Content-Type","application/json");
     
-    const response = await fetch("http://localhost:8080/member/signup",
+
+    await fetch(baseUrl+"/member/signup",
     {
         method: "POST",
         mode: "cors",

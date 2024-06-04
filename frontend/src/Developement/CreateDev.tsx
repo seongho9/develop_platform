@@ -4,14 +4,10 @@ import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import { createTheme } from '@mui/material/styles';
 import Title from '../common/Title';
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import Get from '../Request/Get';
 import Post from '../Request/Post';
-
-// TODO remove, this demo shouldn't need to reset the theme.
-const defaultTheme = createTheme();
 
 type Image = {
     id: number,
@@ -42,17 +38,19 @@ export default function CreateDev() {
         navigate("/dashboard?page=main");
     });
 
-  },[]);
+  }, []);
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     Post("/dev/create", {imageName: dev})
     .then(res=> res.text())
     .then(data=>{
         alert(data);
+        console.log(data);
         navigate("/dashboard?page=main");
     })
     .catch(err=>{
         alert(err);
+        console.log(err);
         navigate("/dashboard?page=dev");
     })
   };

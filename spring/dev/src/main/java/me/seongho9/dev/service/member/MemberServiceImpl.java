@@ -53,6 +53,7 @@ public class MemberServiceImpl implements MemberService {
             ports.setEnd(endOfPorts + 10);
             ports.setCurrent(endOfPorts + 1);
             portRepository.save(ports);
+
             log.info("{}, {}", signupDTO.getUserId(), signupDTO.getPasswd());
             log.info("Ports allocated {}-to-{}", ports.getStart(), ports.getEnd());
             signupDTO.setPasswd(

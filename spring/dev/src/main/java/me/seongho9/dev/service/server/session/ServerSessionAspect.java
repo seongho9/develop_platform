@@ -29,7 +29,8 @@ public class ServerSessionAspect {
             @Value("${host.user}") String serverUser,
             @Value("${host.key}") String serverKey
     ) {
-        log.info("tq");
+        log.info("Server Session : {}:{}", serverAddress, serverPort);
+        log.info("Server key: {}", serverKey);
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
         this.serverUser = serverUser;
@@ -49,6 +50,7 @@ public class ServerSessionAspect {
         try {
             JSch jSch = new JSch();
             jSch.addIdentity(serverKey);
+            log.info("server key {} ", serverKey);
             Properties properties = new Properties();
             properties.put("StrictHostKeyChecking", "no");
             sshSession = jSch.getSession(serverUser, serverAddress, Integer.parseInt(serverPort));

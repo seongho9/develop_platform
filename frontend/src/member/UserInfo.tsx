@@ -73,11 +73,13 @@ export default function UserInfo() {
         autoComplete="off"
         sx={{ mt: 3, display:'flex', flexDirection:'column',  alignItems:'center' }}>
             <Grid container spacing={2} sx={{width:'60%'}}>
+      
               <Grid item xs={12}>
                 <TextField
                   required
                   InputLabelProps={{shrink: true,}}
                   InputProps={{readOnly: true,}}
+                  fullWidth
                   id="name"
                   label="full name"
                   value={info.name}
@@ -92,6 +94,7 @@ export default function UserInfo() {
                   id="userId"
                   label="id"
                   value={info.userId}
+                  disabled
                 />
               </Grid>
               <Grid item xs={12}>

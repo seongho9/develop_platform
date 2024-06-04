@@ -2,7 +2,8 @@ spring:
   aop: auto=true
   datasource:
     driver-class-name: org.sqlite.JDBC
-    url: jdbc:sqlite:./db/dbms.db
+    url: jdbc:sqlite:./dbms.db
+    # /app/etc/dbms.db
     hikari:
       maximum-pool-size: 3
   jpa:
@@ -10,7 +11,7 @@ spring:
     hibernate:
       ddl-auto: update
 docker:
-  host: 
+  host: tcp://192.168.0.5:2375
   tls:
     verify: false
 jwt:
@@ -20,14 +21,14 @@ jwt:
   refresh:
     expire: 60000000
     header: refresh
-  secret: 
+  secret: 7ZWt7ZW0OTntmZTsnbTtjIXtlZzqta3snYTrhIjrqLjshLjqs4TroZzrgpjslYTqsIDsnpDtm4zrpa3tlZzqsJzrsJzsnpDrpbzrp4zrk6TslrTqsIDsnpA=
 host:
-  ip: 
-  mac: 
+  ip: 192.168.0.5
+  mac: 00:16:96:ec:6b:36
   port: 22
   user: seongho
-  key: ./key.pem
+  key: //wsl.localhost/Ubuntu-18.04/home/seongho/keys/home.pem
+  #/app/etc/key.pem
   #//wsl.localhost/Ubuntu-18.04/home/seongho/keys/home.pem
-  #.
   volume: /home/seongho/code-src
-
+  # ./

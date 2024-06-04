@@ -12,7 +12,6 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import base64 from "base-64";
-import { stringify } from 'querystring';
 import Post from '../Request/Post';
 import { Login } from '../Request/Types';
 function Copyright(props: any) {
@@ -50,7 +49,7 @@ export default function SignIn() {
     })
     .then(res=> res.json())
     .catch(err=> alert(err));
-
+    console.log(response);
     const access = response.access;
     const payload = access.substring(access.indexOf(".")+1,access.lastIndexOf("."));
     const decode:JWT = JSON.parse(base64.decode(payload));

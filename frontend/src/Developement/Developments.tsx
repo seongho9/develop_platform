@@ -1,19 +1,15 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Title from '../common/Title';
-import { useNavigate } from 'react-router-dom';
-import base64 from "base-64";
 import Get from '../Request/Get';
 import { Clear } from '@mui/icons-material';
 import Post from '../Request/Post';
-import { baseUrl } from '../Request/Types';
 import Delete from '../Request/Delete';
 
 interface Container{
@@ -29,21 +25,10 @@ type DevleopmentEnv = {
   name: string,
   status: string
 };
-
-function preventDefault(event: React.MouseEvent) {
-  event.preventDefault();
-}
-
-type JWT = {
-  sub: string,
-  id: string,
-  exp: string
-};
 export default function Developments() {
   
   const [containerList, setContainer] = useState<DevleopmentEnv[]>([]);
   
-  const navigator = useNavigate();
 
   useEffect( ()=>{
     const url:string = "/dev/list";
@@ -51,6 +36,7 @@ export default function Developments() {
       .then((data:Response)=>(data.json()))
       .then((json:Container[])=>{
         let count = 0;
+        console.log(json);
         json.map((item: Container)=>
           setContainer(prev=>[
             ...prev,
@@ -66,22 +52,6 @@ export default function Developments() {
       })
       .catch(err=> alert(err));
   }, []);
-
-  const handleStart = (id: string, image: string) =>{
-
-    // const redirect = image.substring("")
-    // Post(`/dev/start/${id}`, null)
-    // .then(res=>res.text())
-    // .then(data=>{
-    //   alert(data);
-    //   navigator(`https://dev.seongho9.me/seongho9/${image}`)
-    // })
-  }
-
-  const handleStop = (id: string) =>{
-
-
-  }
   return (
     <React.Fragment>
       <Title>Development Environments</Title>
@@ -143,7 +113,23 @@ export default function Developments() {
               <TableCell sx={{padding:0, marginRight:0, color:'red'}}>
                 <Button sx={{color:'red'}}
                   onClick={()=>{
-                    alert("아직 구현되지 않았지롱~");
+                    
+                    const name:string = row.name;
+                    name.substring(name.indexOf("-")+1);
+                    const body={
+                      id: row.id,
+                      imageName: name
+                    };
+                    console.log(body);
+                    Delete('/dev/delete', body)
+                    .then(res=>{
+                      alert("deleted");
+                      window.location.reload();
+                    })
+                    .catch(err=>{
+                      alert(err);
+                      console.log(err);
+                    });
                   }}>
                   <Clear />
                 </Button>

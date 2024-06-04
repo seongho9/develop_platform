@@ -9,19 +9,16 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import { mainListItems, secondaryListItems } from './ListItems';
-import Developments from './Developments';
+import { mainListItems } from './ListItems';
+import Developments from '../Developement/Developments';
 import UserInfo from '../member/UserInfo';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import CreateDev from './CreateDev';
+import CreateDev from '../Developement/CreateDev';
 import { Logout } from '@mui/icons-material';
 import Post from '../Request/Post';
 
@@ -163,7 +160,6 @@ export default function Dashboard() {
         >
           <Container maxWidth="lg" sx={{ mt: 10, mb: 4 }}>
             <Grid container spacing={1}>
-              {/* main content */}
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                   { page === "main" && <Developments />}
