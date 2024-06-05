@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MemberInfo } from '../Request/Types';
 import Get from '../Request/Get';
-
-import Title from '../common/Title';
+import { Title } from '../components/commonComponent/Title';
 import { Box, Button, Grid, TextField } from '@mui/material';
 import Post from '../Request/Post';
 
@@ -36,10 +35,8 @@ export default function UserInfo() {
       passwdAfter: info.passwdAfter,
       mail: info.mail
     })
-    .then(res=>res.text())
-    .then(data=>{
-      alert(data)
-      navigate("/dashboard?page=main");
+    .then(res=>{
+      navigate("/");
     })
     .catch(err=>{
       alert(err.message);

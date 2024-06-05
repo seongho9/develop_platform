@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import Title from '../common/Title';
+import { Title } from '../components/commonComponent/Title';
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import Get from '../Request/Get';
 import Post from '../Request/Post';
