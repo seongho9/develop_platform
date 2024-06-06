@@ -4,7 +4,7 @@ import { Input } from "../components/commonComponent/Input";
 import { Link } from "../components/commonComponent/Link";
 import { InputForm } from "../components/memberPage/InputForm";
 import { LinkContainer } from "../components/memberPage/LinkContainer";
-import { SigninContainer } from "../components/memberPage/SigninContainer";
+import { Container } from "../components/memberPage/Container";
 import { SigninForm } from "../components/memberPage/SigninForm";
 import { SubmitContainer } from "../components/memberPage/SubmitContainer";
 import { TitleFontContainer } from "../components/memberPage/TitleContainer";
@@ -21,7 +21,7 @@ interface SigninViewProps {
 export default function SigninView(props:SigninViewProps){
 
     return(
-        <SigninContainer>
+        <Container>
             <SigninForm>
                 <TitleFontContainer>
                     <Title>Development Platform</Title>
@@ -38,6 +38,6 @@ export default function SigninView(props:SigninViewProps){
                     <Link href="/register">Don't have an account?</Link>
                 </LinkContainer>
             </SigninForm>
-        </SigninContainer>
+        </Container>
     );
 }

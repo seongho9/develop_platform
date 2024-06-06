@@ -2,7 +2,7 @@ import { Title } from "../components/commonComponent/Title";
 import { Button } from "../components/commonComponent/Button";
 import { Input } from "../components/commonComponent/Input";
 import { InputForm } from "../components/memberPage/InputForm";
-import { SigninContainer } from "../components/memberPage/SigninContainer";
+import { Container } from "../components/memberPage/Container";
 import { SigninForm } from "../components/memberPage/SigninForm";
 import { SubmitContainer } from "../components/memberPage/SubmitContainer";
 import { TitleFontContainer } from "../components/memberPage/TitleContainer";
@@ -24,7 +24,7 @@ export default function SignupView(props: SignupViewProps){
 
     
     return(
-        <SigninContainer>
+        <Container>
             <SigninForm>
                 <TitleFontContainer>
                     <Title>Sign up</Title>
@@ -40,6 +40,6 @@ export default function SignupView(props: SignupViewProps){
                 </SubmitContainer>
 
             </SigninForm>
-        </SigninContainer>
+        </Container>
     );
 }
