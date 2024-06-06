@@ -6,14 +6,14 @@ export const Button = styled.button`
     padding: 0.75rem;
 
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
 
-    background-color: #007bff;
-    color: white;
 
     font-size: 1rem;
     cursor: pointer;
-
+    background-color: #007bff;
+    color: white;
+    
     &:hover {
         background-color: #0056b3;
     }
