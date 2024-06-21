@@ -6,4 +6,6 @@ export const SubmitContainer = styled.div`
     margin-top: 1rem;
     margin-left: 30%;
     margin-right: 30%;
+    background-color: transparent;
+
 `

@@ -80,3 +80,13 @@ export const ExecButtonContainer = styled.div`
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
 `;
+
+export const DeleteContainer = styled.div`
+    padding:0;
+    margin:0;
+    width:1rem;
+    &:hover{
+        color: gray;
+        cursor: pointer;
+    }
+`

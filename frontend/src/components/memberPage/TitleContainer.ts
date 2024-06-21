@@ -8,4 +8,5 @@ export const TitleFontContainer = styled.div`
     margin-right: 10%;
     margin-bottom: 3rem;
     margin-top: 2.5rem;
+    font-size: 1.5rem;
 `;
