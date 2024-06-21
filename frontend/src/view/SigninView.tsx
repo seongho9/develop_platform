@@ -14,6 +14,7 @@ interface SigninViewProps {
     id: string;
     idHandler: (e: ChangeEvent<HTMLInputElement>)=>void;
     password: string,
+    handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>)=>void,
     passwordHandler: (e: ChangeEvent<HTMLInputElement>)=>void;
     submitHandler: ()=>void;
 };
@@ -27,8 +28,10 @@ export default function SigninView(props:SigninViewProps){
                     <Title>Development Platform</Title>
                 </TitleFontContainer>
                 <InputForm>
-                    <Input type="text" placeholder="id *" value={props.id} onChange={props.idHandler}  />
-                    <Input type="password" placeholder="password *" value={props.password} onChange={props.passwordHandler} />
+                    <Input type="text" placeholder="id *" value={props.id} 
+                        onChange={props.idHandler} onKeyDown={(e)=>props.handleKeyDown(e)} />
+                    <Input type="password" placeholder="password *" value={props.password} 
+                    onChange={props.passwordHandler} onKeyDown={(e)=>props.handleKeyDown(e)} />
                 </InputForm>
                 <SubmitContainer>
                     <Button onClick={props.submitHandler}>LOGIN</Button>

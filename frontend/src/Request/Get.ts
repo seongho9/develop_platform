@@ -18,17 +18,17 @@ export default async function Get(url: string): Promise<Response>{
             }
 
             fetch(baseUrl + url, {headers:refreshHeader})
-            .then(res => res.text())
-            .then(token =>{
-                sessionStorage.removeItem("access");
-                sessionStorage.setItem("access", token);
+                .then(res => res.text())
+                .then(token =>{
+                    sessionStorage.removeItem("access");
+                    sessionStorage.setItem("access", token);
 
-                sessionStorage.removeItem("exp");
-                const payload = token.substring(token.indexOf(".")+1,token.lastIndexOf("."));
-                const decode:JWT = JSON.parse(base64.decode(payload));
-                sessionStorage.removeItem("exp");
-                sessionStorage.setItem("exp", decode.exp);
-            })
+                    sessionStorage.removeItem("exp");
+                    const payload = token.substring(token.indexOf(".")+1,token.lastIndexOf("."));
+                    const decode:JWT = JSON.parse(base64.decode(payload));
+                    sessionStorage.removeItem("exp");
+                    sessionStorage.setItem("exp", decode.exp);
+                });
         }
         const headers:Headers = new Headers();
         const token = sessionStorage.getItem("access");
