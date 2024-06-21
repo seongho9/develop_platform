@@ -1,9 +1,9 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
-import SignIn from './member/Signin';
-import SignUp from './member/Signup';
-import Dashboard from './DashBorad/DashBoard';
-import UserInfo from './member/UserInfo';
+import Signup from './present/member/Signup';
+import SignIn from './present/member/Signin'
+import DashBoradView from './view/DashBoardView';
+import Dashboard from './present/development/Dashboard';
 
 function App() {
   return (
@@ -11,7 +11,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<SignIn />}></Route>
-          <Route path="/register" element={<SignUp />}></Route>
+          <Route path="/register" element={<Signup />}></Route>
           <Route path="/dashboard" element={<Dashboard />}></Route>
         </Routes>
       </BrowserRouter>
